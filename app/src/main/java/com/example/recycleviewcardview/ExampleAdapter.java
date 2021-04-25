@@ -1,5 +1,6 @@
 package com.example.recycleviewcardview;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,13 +8,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
-    private ArrayList<ExampleItem> mExampleList;
+    private   ArrayList<ExampleItem> mExampleList;
 
     public static class ExampleViewHolder extends RecyclerView.ViewHolder{
         public ImageView mImageView;
@@ -48,14 +51,15 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
     public void onBindViewHolder(@NonNull ExampleViewHolder holder, int position) {
         ExampleItem currentItem = mExampleList.get(position);
 
-        holder.mImageView.setImageResource(currentItem.getmImageResource());
+        Picasso.with(holder.mImageView.getContext()).load(currentItem.getmImageResource()).fit().centerInside().into(holder.mImageView);
+//        holder.mImageView.setImageResource(currentItem.getmImageResource());
         holder.mTextView1.setText(currentItem.getmText1());
         holder.mTextView2.setText(currentItem.getmText2());
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "選了" + position, Toast.LENGTH_SHORT).show();
+                //do something
             }
         });
     }
