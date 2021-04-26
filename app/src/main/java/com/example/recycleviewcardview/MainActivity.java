@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,12 +34,17 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton floatbtn;
     private ArrayList<ExampleItem> exampleList = new ArrayList<>();
     private String url = "https://pixabay.com/api/?key=21323023-1a023bbaa5108b470625b5820&q=kitten&image_type=photo&pretty=true&per_page=100";
+    // 跳頁用Context
+    private static Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //獲取主頁面Context
+        MainActivity.context = getApplicationContext();
 
+        //重整
         floatbtn = findViewById(R.id.floatbtn);
         floatbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 mAdapter.notifyDataSetChanged();    //通知adapter數據變更
             }
         });
-
+        //設定Recyclerview
         mRecyclerView = findViewById(R.id.recycleview);
         mRecyclerView.setHasFixedSize(true);                //確定item不會影響RecyclerView的寬高時可以設置
         mRecyclerView.setItemViewCacheSize(200);  //設定緩存的item數
@@ -62,18 +68,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getData() {
-//        for (int i=0;i<=30;i++){
-//            exampleList.add(new ExampleItem(R.drawable.ic_baseline_audiotrack_24, String.valueOf(i), String.valueOf(i)));
-//            exampleList.add(new ExampleItem(R.drawable.ic_baseline_directions_boat_24, String.valueOf(i), String.valueOf(i)));
-//            exampleList.add(new ExampleItem(R.drawable.ic_android_black_24dp, String.valueOf(i), String.valueOf(i)));
-//        }
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    //Json解析
                     String result = DoGet(url);
                     JSONObject jsonObject = new JSONObject(result);
                     JSONArray jsonArray = jsonObject.getJSONArray("hits");
+
                     for(int i=0;i<jsonArray.length();i++){
                         JSONObject jsonObject2 = jsonArray.getJSONObject(i);
                         String id = jsonObject2.getString("id");
@@ -81,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
                         String img = jsonObject2.getString("webformatURL");
                         exampleList.add(new ExampleItem(img,id,likes));
                     }runOnUiThread(new Runnable() {
-
                         @Override
                         public void run() {
                             mAdapter = new ExampleAdapter(exampleList);
@@ -158,5 +160,9 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             return "";
         }
+    }
+    //供主頁面Context給Adapter用
+    public static Context getMainActivityContext(){
+        return MainActivity.context;
     }
 }

@@ -1,6 +1,8 @@
 package com.example.recycleviewcardview;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
     private   ArrayList<ExampleItem> mExampleList;
-
+    MainActivity mainActivity;
     public static class ExampleViewHolder extends RecyclerView.ViewHolder{
         public ImageView mImageView;
         public TextView mTextView1;
@@ -53,13 +55,20 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
 
         Picasso.with(holder.mImageView.getContext()).load(currentItem.getmImageResource()).fit().centerInside().into(holder.mImageView);
 //        holder.mImageView.setImageResource(currentItem.getmImageResource());
-        holder.mTextView1.setText(currentItem.getmText1());
-        holder.mTextView2.setText(currentItem.getmText2());
+        holder.mTextView1.setText("ID: " + currentItem.getmId());
+        holder.mTextView2.setText("Likes: " + currentItem.getmLikes());
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //do something
+                Intent intent = new Intent(MainActivity.getMainActivityContext(),detail_activity.class);
+                intent.putExtra("img",currentItem.getmImageResource())
+                        .putExtra("id",currentItem.getmId())
+                        .putExtra("likes",currentItem.getmLikes());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                MainActivity.getMainActivityContext().startActivity(intent);
+
             }
         });
     }
